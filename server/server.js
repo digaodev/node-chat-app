@@ -11,19 +11,29 @@ const io = socketIO(server);
 const publicDir = path.join(__dirname, '../public');
 app.use(express.static(publicDir));
 
-io.on('connection', (socket) => {
+io.on('connection', socket => {
   console.log('new user connected');
 
-  socket.on('createMessage', (message) => {
-    console.log('incoming message: ', message);
+  // send this message to the new connected socket
+  socket.emit('newMessage', {
+    from: 'Admin',
+    text: 'Welcome to the chat',
+    createdAt: new Date().getTime()
+  });
 
-    message.createdAt = new Date();
+  // broadcast this message to everyone in the chat
+  socket.broadcast.emit('newMessage', {
+    from: 'Admin',
+    text: 'New user has joined the chat',
+    createdAt: new Date().getTime()
+  });
 
+  socket.on('createMessage', message => {
     io.emit('newMessage', {
-      for: 'everyone',
-      message: message
+      from: message.from,
+      text: message.text,
+      createdAt: new Date().getTime()
     });
-    console.log('broadcasting message: ', message);
   });
 
   socket.on('disconnect', () => {
@@ -38,4 +48,4 @@ app.get('*', (req, res) => {
 });
 
 const port = process.env.PORT || 3000;
-server.listen(port, () => console.log(`API running on localhost:${ port }`));
+server.listen(port, () => console.log(`API running on localhost:${port}`));
