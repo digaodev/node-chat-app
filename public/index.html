@@ -5,35 +5,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-    crossorigin="anonymous">
+
   <link rel="stylesheet" href="/styles/style.css">
   <title>Chat App</title>
 </head>
 
-<body>
-  <div class="container">
-    <div class="row">
-      <h1 class="app-title text-center">Welcome to the CHAT APP</h1>
-    </div>
-    <div class="row">
-      <div class="col-sm-12 col-md-8 col-md-offset-2">
+<body class="chat">
+  <div class="chat__sidebar">
+    <h3>People</h3>
+    <div id="users"></div>
+  </div>
 
-        <form class="message-form" id="message-form" role="form">
-          <legend class="message-form__legend">Say hello to your friends</legend>
+  <div class="chat__main">
+    <ol class="chat__messages" id="messages-panel"></ol>
 
-          <ol class="messages-panel" id="messages-panel"></ol>
+    <div class="chat__footer">
+      <form id="message-form">
+        <div>
+          <input name="message-input" id="message-input" type="text" placeholder="Type your message here..." autofocus autocomplete="off">
+        </div>
 
-          <div class="message-form__message form-group">
-            <input name="message-input" id="message-input" type="text" class="form-control message-form__message-input" placeholder="Type your message here...">
-          </div>
-
-          <button type="submit" id="btn-send" class="btn btn-send">Send</button>
-          <button type="button" id="btn-send-location" class="btn btn-send">Send Location</button>
-        </form>
-      </div>
+        <button type="submit" id="btn-send" class="btn-send">Send</button>
+        <button type="button" id="btn-send-location" class="btn-send">Send Location</button>
+      </form>
     </div>
   </div>
+
 
 
   <script src="/socket.io/socket.io.js"></script>
