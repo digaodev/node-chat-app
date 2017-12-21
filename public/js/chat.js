@@ -21,7 +21,16 @@ function scrollToBottom() {
 }
 
 socket.on('connect', function() {
-  console.log('connected to the server');
+  var params = $.deparam(window.location.search);
+
+  socket.emit('join', params, function(err) {
+    if (err) {
+      alert(err);
+      window.location.href = '/';
+    } else {
+      console.log('no error');
+    }
+  });
 });
 
 socket.on('disconnect', function() {
@@ -39,6 +48,7 @@ socket.on('newMessage', function(newMessage) {
     createdAt: formattedTime
   });
 
+  console.log('newmessage = ', html);
   $('#messages').append(html);
   scrollToBottom();
   // let li = $('<li></li>');

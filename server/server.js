@@ -5,6 +5,7 @@ const express = require('express');
 const socketIO = require('socket.io');
 
 const { generateMessage, generateLocationMessage } = require('./utils/message');
+const { isRealString } = require('./utils/validation');
 
 const app = express();
 const server = http.createServer(app);
@@ -14,16 +15,25 @@ const publicDir = path.join(__dirname, '../public');
 app.use(express.static(publicDir));
 
 io.on('connection', socket => {
-  console.log('new user connected');
+  socket.on('join', (params, callback) => {
+    if (!isRealString(params.name) || !isRealString(params.room)) {
+      callback('Name and Room Name are required.');
+    }
 
-  // send this message to the new connected socket
-  socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat'));
+    // join the user to a chat room
+    socket.join(params.room);
 
-  // broadcast this message to everyone in the chat but the sender
-  socket.broadcast.emit(
-    'newMessage',
-    generateMessage('Admin', 'New user has joined the chat')
-  );
+    // send this message to the new connected socket
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat'));
+
+    // broadcast this message to everyone in the chat but the sender
+    socket.broadcast.to(params.room).emit(
+      'newMessage',
+      generateMessage('Admin', `${params.name} has joined the chat`)
+    );
+
+    callback();
+  });
 
   socket.on('createMessage', (message, callback) => {
     // broadcast this message to everyone in the chat including the sender
