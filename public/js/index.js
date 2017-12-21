@@ -9,22 +9,26 @@ socket.on('disconnect', function() {
 });
 
 socket.on('newMessage', function(newMessage) {
+  const formattedTime = moment(newMessage.createdAt).format('HH:mm');
+
   let li = $('<li></li>');
-  li.text(`${newMessage.from} says: ${newMessage.text}`);
+  li.text(`[${formattedTime}] ${newMessage.from} says: ${newMessage.text}`);
 
   $('#messages-panel').append(li);
 });
 
 socket.on('newLocationMessage', function(locationMessage) {
+  const formattedTime = moment(locationMessage.createdAt).format('HH:mm');
+
   let li = $('<li></li>');
   let anchor = $('<a target="_blank"></a>');
   let div = $('<div></div>');
   let mapImg = $('<img></img>');
 
   li.text(
-    `${
+    `[${formattedTime}] ${
       locationMessage.from
-    } says: I am currently here... [click on the map to open in a new tab]`
+    } says: I am currently here...`
   );
   anchor.attr('href', locationMessage.link);
   mapImg.attr('src', locationMessage.url);
