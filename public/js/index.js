@@ -18,13 +18,19 @@ socket.on('newMessage', function(newMessage) {
 socket.on('newLocationMessage', function(locationMessage) {
   let li = $('<li></li>');
   let anchor = $('<a target="_blank"></a>');
+  let div = $('<div></div>');
   let mapImg = $('<img></img>');
 
-  li.text(`${locationMessage.from} says: I am currently here... [click on the map to open in a new tab]`);
+  li.text(
+    `${
+      locationMessage.from
+    } says: I am currently here... [click on the map to open in a new tab]`
+  );
   anchor.attr('href', locationMessage.link);
   mapImg.attr('src', locationMessage.url);
 
-  anchor.append(mapImg);
+  div.append(mapImg);
+  anchor.append(div);
   li.append(anchor);
   $('#messages-panel').append(li);
 });
@@ -32,11 +38,13 @@ socket.on('newLocationMessage', function(locationMessage) {
 $('#message-form').on('submit', function(evt) {
   evt.preventDefault();
 
+  var messageInput = $('#message-input');
+
   socket.emit(
     'createMessage',
-    { from: 'User', text: $('#message-input').val() },
-    function(data) {
-      console.log(data);
+    { from: 'User', text: messageInput.val() },
+    function() {
+      messageInput.val('');
     }
   );
 });
@@ -46,8 +54,13 @@ btnLocation.on('click', function() {
   if (!navigator.geolocation) {
     return alert('Geolocation not supported by your browser.');
   }
+
+  btnLocation.attr('disabled', 'disabled').text('Sending location...');
+
   navigator.geolocation.getCurrentPosition(
     function(position) {
+      btnLocation.removeAttr('disabled').text('Send location');
+
       socket.emit('createLocationMessage', {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude
@@ -55,6 +68,7 @@ btnLocation.on('click', function() {
     },
     function() {
       alert('Unable to get your location.');
+      btnLocation.removeAttr('disabled').text('Send location');
     }
   );
 });

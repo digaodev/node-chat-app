@@ -28,7 +28,7 @@ io.on('connection', socket => {
   socket.on('createMessage', (message, callback) => {
     // broadcast this message to everyone in the chat including the sender
     io.emit('newMessage', generateMessage(message.from, message.text));
-    callback('got it: ', message);
+    callback();
   });
 
   socket.on('createLocationMessage', coords => {
