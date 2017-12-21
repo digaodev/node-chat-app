@@ -5,26 +5,14 @@ html {
 body {
   font-size: 16px;
   color: #fff;
-
-  background: rgb(203, 96, 179); /* Old browsers */
-  background: -moz-linear-gradient(
-    45deg,
-    rgba(203, 96, 179, 1) 0%,
-    rgba(113, 15, 137, 1) 50%,
-    rgba(82, 40, 127, 1) 100%
-  ); /* FF3.6-15 */
-  background: -webkit-linear-gradient(
-    45deg,
-    rgba(203, 96, 179, 1) 0%,
-    rgba(113, 15, 137, 1) 50%,
-    rgba(82, 40, 127, 1) 100%
-  ); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(
-    45deg,
-    rgba(203, 96, 179, 1) 0%,
-    rgba(113, 15, 137, 1) 50%,
-    rgba(82, 40, 127, 1) 100%
-  ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  background: rgb(203, 96, 179);
+  /* Old browsers */
+  background: -moz-linear-gradient( 45deg, rgba(203, 96, 179, 1) 0%, rgba(113, 15, 137, 1) 50%, rgba(82, 40, 127, 1) 100%);
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient( 45deg, rgba(203, 96, 179, 1) 0%, rgba(113, 15, 137, 1) 50%, rgba(82, 40, 127, 1) 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient( 45deg, rgba(203, 96, 179, 1) 0%, rgba(113, 15, 137, 1) 50%, rgba(82, 40, 127, 1) 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 }
 
 .app-title {
@@ -35,9 +23,7 @@ body {
   -webkit-box-shadow: 0px 0px 4px 6px rgba(255, 255, 255, 0.7);
   -moz-box-shadow: 0px 0px 4px 6px rgba(255, 255, 255, 0.7);
   box-shadow: 0px 0px 6px 4px rgba(255, 255, 255, 0.7);
-
   background-color: rgba(255, 255, 255, 0.2);
-
   padding: 3rem;
 }
 
@@ -49,4 +35,16 @@ body {
 
 .message-form__legend {
   color: #fff;
+}
+
+.btn-send {
+  border: 2px solid #fff;
+  font-weight: 500;
+  background-color: transparent;
+}
+
+.btn-send:hover {
+  color: palevioletred;
+  border-color: palevioletred;
+  background-color: #fff;
 }

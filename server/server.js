@@ -4,7 +4,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-const { generateMessage } = require('./utils/message');
+const { generateMessage, generateLocationMessage } = require('./utils/message');
 
 const app = express();
 const server = http.createServer(app);
@@ -29,6 +29,13 @@ io.on('connection', socket => {
     // broadcast this message to everyone in the chat including the sender
     io.emit('newMessage', generateMessage(message.from, message.text));
     callback('got it: ', message);
+  });
+
+  socket.on('createLocationMessage', coords => {
+    io.emit(
+      'newLocationMessage',
+      generateLocationMessage('Admin', coords.latitude, coords.longitude)
+    );
   });
 
   socket.on('disconnect', () => {
