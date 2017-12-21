@@ -25,9 +25,10 @@ io.on('connection', socket => {
     generateMessage('Admin', 'New user has joined the chat')
   );
 
-  socket.on('createMessage', message => {
+  socket.on('createMessage', (message, callback) => {
     // broadcast this message to everyone in the chat including the sender
     io.emit('newMessage', generateMessage(message.from, message.text));
+    callback('got it: ', message);
   });
 
   socket.on('disconnect', () => {
