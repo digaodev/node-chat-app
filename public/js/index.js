@@ -1,5 +1,25 @@
 var socket = io();
 
+function scrollToBottom() {
+  // selectors
+  var messages = $('#messages');
+  var newMessage = messages.children('li:last-child');
+
+  // heights
+  var clientHeight = messages.prop('clientHeight');
+  var scrollTop = messages.prop('scrollTop');
+  var scrollHeight = messages.prop('scrollHeight');
+  var newMessageHeight = newMessage.innerHeight();
+  var lastMessageHeight = newMessage.prev().innerHeight() || 0;
+
+  if (
+    clientHeight + scrollTop + newMessageHeight + lastMessageHeight >=
+    scrollHeight
+  ) {
+    messages.scrollTop(scrollHeight);
+  }
+}
+
 socket.on('connect', function() {
   console.log('connected to the server');
 });
@@ -9,34 +29,54 @@ socket.on('disconnect', function() {
 });
 
 socket.on('newMessage', function(newMessage) {
-  const formattedTime = moment(newMessage.createdAt).format('HH:mm');
+  var formattedTime = moment(newMessage.createdAt).format('HH:mm');
 
-  let li = $('<li></li>');
-  li.text(`[${formattedTime}] ${newMessage.from} says: ${newMessage.text}`);
+  var template = $('#message-template').html();
 
-  $('#messages-panel').append(li);
+  var html = Mustache.render(template, {
+    from: newMessage.from,
+    text: newMessage.text,
+    createdAt: formattedTime
+  });
+
+  $('#messages').append(html);
+  scrollToBottom();
+  // let li = $('<li></li>');
+  // li.text(`[${formattedTime}] ${newMessage.from} says: ${newMessage.text}`);
+
+  // $('#messages-panel').append(li);
 });
 
 socket.on('newLocationMessage', function(locationMessage) {
-  const formattedTime = moment(locationMessage.createdAt).format('HH:mm');
+  var formattedTime = moment(locationMessage.createdAt).format('HH:mm');
 
-  let li = $('<li></li>');
-  let anchor = $('<a target="_blank"></a>');
-  let div = $('<div></div>');
-  let mapImg = $('<img></img>');
+  var template = $('#location-message-template').html();
 
-  li.text(
-    `[${formattedTime}] ${
-      locationMessage.from
-    } says: I am currently here...`
-  );
-  anchor.attr('href', locationMessage.link);
-  mapImg.attr('src', locationMessage.url);
+  var html = Mustache.render(template, {
+    from: locationMessage.from,
+    text: 'I am currently here...',
+    link: locationMessage.link,
+    url: locationMessage.url,
+    createdAt: formattedTime
+  });
 
-  div.append(mapImg);
-  anchor.append(div);
-  li.append(anchor);
-  $('#messages-panel').append(li);
+  $('#messages').append(html);
+  scrollToBottom();
+  // let li = $('<li></li>');
+  // let anchor = $('<a target="_blank"></a>');
+  // let div = $('<div></div>');
+  // let mapImg = $('<img></img>');
+
+  // li.text(
+  //   `[${formattedTime}] ${locationMessage.from} says: I am currently here...`
+  // );
+  // anchor.attr('href', locationMessage.link);
+  // mapImg.attr('src', locationMessage.url);
+
+  // div.append(mapImg);
+  // anchor.append(div);
+  // li.append(anchor);
+  // $('#messages-panel').append(li);
 });
 
 $('#message-form').on('submit', function(evt) {
