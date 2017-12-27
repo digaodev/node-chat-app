@@ -6,10 +6,12 @@ const socketIO = require('socket.io');
 
 const { generateMessage, generateLocationMessage } = require('./utils/message');
 const { isRealString } = require('./utils/validation');
+const { Users } = require('./utils/users');
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
+const users = new Users();
 
 const publicDir = path.join(__dirname, '../public');
 app.use(express.static(publicDir));
@@ -17,20 +19,28 @@ app.use(express.static(publicDir));
 io.on('connection', socket => {
   socket.on('join', (params, callback) => {
     if (!isRealString(params.name) || !isRealString(params.room)) {
-      callback('Name and Room Name are required.');
+      return callback('Name and Room Name are required.');
     }
 
     // join the user to a chat room
     socket.join(params.room);
+    // remove the user from any previous chat room
+    users.removeUser(socket.id);
+    // update the users list
+    users.addUser(socket.id, params.name, params.room);
+
+    io.to(params.room).emit('updateUserList', users.getUserList(params.room));
 
     // send this message to the new connected socket
     socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat'));
 
     // broadcast this message to everyone in the chat but the sender
-    socket.broadcast.to(params.room).emit(
-      'newMessage',
-      generateMessage('Admin', `${params.name} has joined the chat`)
-    );
+    socket.broadcast
+      .to(params.room)
+      .emit(
+        'newMessage',
+        generateMessage('Admin', `${params.name} has joined the chat`)
+      );
 
     callback();
   });
@@ -49,7 +59,12 @@ io.on('connection', socket => {
   });
 
   socket.on('disconnect', () => {
-    console.log('user disconnected');
+    let user = users.removeUser(socket.id);
+
+    if (user) {
+      io.to(user.room).emit('updateUserList', users.getUserList(user.room));
+      io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left the room`));
+    }
   });
 });
 
