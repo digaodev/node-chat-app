@@ -37,10 +37,10 @@ socket.on('disconnect', function() {
   console.log('disconnected from the server');
 });
 
-socket.on('updateUserList', function(users){
+socket.on('updateUserList', function(users) {
   var ol = $('<ol></ol>');
 
-  users.forEach(function(user){
+  users.forEach(function(user) {
     ol.append($('<li></li>').text(user));
   });
 
@@ -57,7 +57,6 @@ socket.on('newMessage', function(newMessage) {
     text: newMessage.text,
     createdAt: formattedTime
   });
-
 
   $('#messages').append(html);
   scrollToBottom();
@@ -104,13 +103,9 @@ $('#message-form').on('submit', function(evt) {
 
   var messageInput = $('#message-input');
 
-  socket.emit(
-    'createMessage',
-    { from: 'User', text: messageInput.val() },
-    function() {
-      messageInput.val('');
-    }
-  );
+  socket.emit('createMessage', { text: messageInput.val() }, function() {
+    messageInput.val('');
+  });
 });
 
 const btnLocation = $('#btn-send-location');
