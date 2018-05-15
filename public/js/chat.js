@@ -81,21 +81,6 @@ socket.on('newLocationMessage', function(locationMessage) {
 
   $('#messages').append(html);
   scrollToBottom();
-  // let li = $('<li></li>');
-  // let anchor = $('<a target="_blank"></a>');
-  // let div = $('<div></div>');
-  // let mapImg = $('<img></img>');
-
-  // li.text(
-  //   `[${formattedTime}] ${locationMessage.from} says: I am currently here...`
-  // );
-  // anchor.attr('href', locationMessage.link);
-  // mapImg.attr('src', locationMessage.url);
-
-  // div.append(mapImg);
-  // anchor.append(div);
-  // li.append(anchor);
-  // $('#messages-panel').append(li);
 });
 
 $('#message-form').on('submit', function(evt) {
